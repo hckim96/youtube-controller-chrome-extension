@@ -1,0 +1,14 @@
+body {
+    min-width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.nav-bar {
+    width: 30%;
+    justify-content: space-between;
+}
+
+button + button {
+    margin-left: 1rem;
+}

@@ -1,17 +1,36 @@
 // from when chrome launch , listen  events
-console.log('background running'); // cant see on page inspection
 // can see on extension tab, background page
+let audibleTabId = null;
 
-chrome.browserAction.onClicked.addListener(buttonClicked);
-function buttonClicked(tab) {
-    console.log(tab);
-    const msg = {
-        txt: 'hello',
-    };
-    chrome.tabs.sendMessage(tab.id, msg);
-
-    chrome.tabs.query({ audible: true }, gotTab);
-    function gotTab(tabs) {
-        chrome.tabs.sendMessage(tab.id, tabs[0]);
+chrome.runtime.onMessage.addListener(gotMessage);
+function gotMessage(request, sender, sendResponse) {
+    console.log(
+        `sender:: ${JSON.stringify(sender)} // request :: ${JSON.stringify(
+            request
+        )}`
+    );
+    if (request.txt === 'request audible tabid') {
+        chrome.runtime.sendMessage({
+            txt: 'response to tabid request',
+            audibleTabId,
+        });
     }
 }
+
+function handleUpdated(tabId, changeInfo, tab) {
+    chrome.tabs.query({ active: true }, function (t) {
+        chrome.tabs.sendMessage(t[0].id, changeInfo);
+        chrome.runtime.sendMessage({ audibleTabId: tabId, ...changeInfo });
+    });
+    if (changeInfo.audible === true) {
+        audibleTabId = tabId;
+    }
+}
+
+chrome.tabs.onUpdated.addListener(handleUpdated);
+
+chrome.tabs.query({ audible: true }, function (tabs) {
+    if (tabs.length !== 0) {
+        audibleTabId = tabs[0].id;
+    }
+});

@@ -1,68 +1,89 @@
-console.log('content js is ready to go');
-
-function handleCapture() {
-    console.log('captured');
-}
-// chrome.tabCapture.getCapturedTabs(handleCapture);
-
-function handleChange() {
-    console.log('handle changed');
-}
-function gotTab(tab) {
-    console.log(tab.id);
-}
-// chrome.tabs.getCurrent(gotTab);
-// chrome.tabCapture.onStatusChanged.addListener(handleChange);
 chrome.runtime.onMessage.addListener(gotMessage);
 function gotMessage(request, sender, sendResponse) {
-    // console.log(`request :: ${JSON.stringify(request)}`);
-    // if (request.txt === 'hello') {
-    //     let paragraphs = document.getElementsByTagName('p');
-    //     for (e of paragraphs) {
-    //         e.style['background-color'] = 'red';
-    //     }
-    // }
+    console.log(`sender:: ${sender} // request :: ${JSON.stringify(request)}`);
 
-    let div = document.createElement('div');
-    div.id = 'player';
-    document.querySelector('body').appendChild(div);
-    var tag = document.createElement('script');
+    const a = document.querySelectorAll('a');
+    const buttons = document.querySelectorAll('button');
+    let ele;
+    // ele = document.querySelector('#container > h1 > yt-formatted-string');
 
-    tag.src = 'https://www.youtube.com/iframe_api';
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    // chrome.runtime.sendMessage({
+    //     txt: 'response title',
+    //     title: ele.textContent,
+    // });
+    switch (request.txt) {
+        case 'play':
+            for (let i = 0; i < buttons.length; i++) {
+                if (buttons[i].classList.contains('ytp-play-button')) {
+                    buttons[i].click();
+                }
+            }
+            break;
+        case 'stop':
+            for (let i = 0; i < buttons.length; i++) {
+                if (buttons[i].classList.contains('ytp-play-button')) {
+                    buttons[i].click();
+                }
+            }
+            break;
+        case 'next':
+            for (let i = 0; i < a.length; i++) {
+                if (a[i].classList.contains('ytp-next-button')) {
+                    a[i].click();
+                }
+            }
+            break;
+        case 'prev':
+            for (let i = 0; i < a.length; i++) {
+                if (a[i].classList.contains('ytp-prev-button')) {
+                    a[i].click();
+                }
+            }
+            break;
+        case 'skip':
+            let skip = document.querySelector(
+                '#skip-button:23 > span > button'
+            );
+            skip.click();
+            break;
+        case 'request html':
+            chrome.runtime.sendMessage({
+                txt: 'response html',
+                html: document.all[0].outerHTML,
+            });
+            break;
+        case 'request title':
+            ele = document.querySelector(
+                '#container > h1 > yt-formatted-string'
+            );
 
-    // 3. This function creates an <iframe> (and YouTube player)
-    //    after the API code downloads.
-    var player;
-    function onYouTubeIframeAPIReady() {
-        player = new YT.Player('player', {
-            height: '360',
-            width: '640',
-            videoId: 'M7lc1UVf-VE',
-            events: {
-                onReady: onPlayerReady,
-                onStateChange: onPlayerStateChange,
-            },
-        });
-    }
+            chrome.runtime.sendMessage({
+                txt: 'response title',
+                title: ele.textContent,
+            });
 
-    // 4. The API will call this function when the video player is ready.
-    function onPlayerReady(event) {
-        event.target.playVideo();
-    }
-
-    // 5. The API calls this function when the player's state changes.
-    //    The function indicates that when playing a video (state=1),
-    //    the player should play for six seconds and then stop.
-    var done = false;
-    function onPlayerStateChange(event) {
-        if (event.data == YT.PlayerState.PLAYING && !done) {
-            setTimeout(stopVideo, 6000);
-            done = true;
-        }
-    }
-    function stopVideo() {
-        player.stopVideo();
+            break;
+        case 'request img':
+            chrome.runtime.sendMessage({
+                txt: 'response img',
+            });
+            break;
+        case 'request progress':
+            // ele = document.querySelector(
+            //     '#movie_player > div.ytp-chrome-bottom > div.ytp-chrome-controls > div.ytp-left-controls > div > span.ytp-time-duration'
+            // );
+            // let ele2 = document.querySelector(
+            //     '#movie_player > div.ytp-chrome-bottom > div.ytp-chrome-controls > div.ytp-left-controls > div > span.ytp-time-current'
+            // );
+            // chrome.runtime.sendMessage({
+            //     txt: 'response progress',
+            //     progress:
+            //         pasreInt(ele2.textContent) / pasreInt(ele.textContent),
+            // });
+            break;
+        default:
+            break;
     }
 }
+
+chrome.runtime.sendMessage({ txt: 'this is from content message' });
