@@ -11,7 +11,7 @@ function gotMessage(request, sender, sendResponse) {
     );
     if (request.txt === 'request audible tabid') {
         chrome.runtime.sendMessage({
-            txt: 'response to tabid request',
+            txt: 'response audibleTabId',
             audibleTabId,
         });
     }

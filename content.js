@@ -11,6 +11,11 @@ function gotMessage(request, sender, sendResponse) {
     //     txt: 'response title',
     //     title: ele.textContent,
     // });
+
+    // video = documnet.querySelector(
+    //     '#movie_player > div.html5-video-container > video'
+    // );
+
     switch (request.txt) {
         case 'play':
             for (let i = 0; i < buttons.length; i++) {
@@ -18,6 +23,7 @@ function gotMessage(request, sender, sendResponse) {
                     buttons[i].click();
                 }
             }
+            // video.play();
             break;
         case 'stop':
             for (let i = 0; i < buttons.length; i++) {
@@ -25,6 +31,7 @@ function gotMessage(request, sender, sendResponse) {
                     buttons[i].click();
                 }
             }
+            // video.stop();
             break;
         case 'next':
             for (let i = 0; i < a.length; i++) {
@@ -69,17 +76,6 @@ function gotMessage(request, sender, sendResponse) {
             });
             break;
         case 'request progress':
-            // ele = document.querySelector(
-            //     '#movie_player > div.ytp-chrome-bottom > div.ytp-chrome-controls > div.ytp-left-controls > div > span.ytp-time-duration'
-            // );
-            // let ele2 = document.querySelector(
-            //     '#movie_player > div.ytp-chrome-bottom > div.ytp-chrome-controls > div.ytp-left-controls > div > span.ytp-time-current'
-            // );
-            // chrome.runtime.sendMessage({
-            //     txt: 'response progress',
-            //     progress:
-            //         pasreInt(ele2.textContent) / pasreInt(ele.textContent),
-            // });
             break;
         default:
             break;

@@ -1,32 +1,34 @@
 chrome.runtime.onMessage.addListener(gotMessage);
+
+let audibleTabId = null;
+chrome.runtime.sendMessage({ txt: 'request audible tabid' });
+
 function gotMessage(request, sender, sendResponse) {
     console.log(`sender:: ${sender} // request :: ${JSON.stringify(request)}`);
-    if (request.hasOwnProperty('audibleTabId')) {
-        chrome.tabs.sendMessage(request.audibleTabId, { txt: 'request html' });
-        chrome.tabs.sendMessage(request.audibleTabId, { txt: 'request title' });
-        chrome.tabs.sendMessage(request.audibleTabId, { txt: 'request img' });
-        chrome.tabs.sendMessage(request.audibleTabId, {
-            txt: 'request progress',
-        });
-    }
 
-    if (request.txt === 'response to tabid request') {
+    if (request.txt === 'response audibleTabId') {
+        audibleTabId = request.audibleTabId;
         const play = document.querySelector('.play-button'),
             next = document.querySelector('.next-button'),
             prev = document.querySelector('.prev-button');
         skip = document.querySelector('.skip-ad-button');
-
+        chrome.tabs.sendMessage(audibleTabId, { txt: 'request html' });
+        chrome.tabs.sendMessage(audibleTabId, { txt: 'request img' });
+        chrome.tabs.sendMessage(audibleTabId, { txt: 'request title' });
+        chrome.tabs.sendMessage(audibleTabId, {
+            txt: 'request progress',
+        });
         play.addEventListener('click', (e) => {
-            chrome.tabs.sendMessage(request.audibleTabId, { txt: 'play' });
+            chrome.tabs.sendMessage(audibleTabId, { txt: 'play' });
         });
         next.addEventListener('click', (e) => {
-            chrome.tabs.sendMessage(request.audibleTabId, { txt: 'next' });
+            chrome.tabs.sendMessage(audibleTabId, { txt: 'next' });
         });
         prev.addEventListener('click', (e) => {
-            chrome.tabs.sendMessage(request.audibleTabId, { txt: 'prev' });
+            chrome.tabs.sendMessage(audibleTabId, { txt: 'prev' });
         });
         skip.addEventListener('click', (e) => {
-            chrome.tabs.sendMessage(request.audibleTabId, { txt: 'skip' });
+            chrome.tabs.sendMessage(audibleTabId, { txt: 'skip' });
         });
     } else if (request.txt === 'response html') {
     } else if (request.txt === 'response title') {
@@ -39,4 +41,3 @@ function gotMessage(request, sender, sendResponse) {
         chrome.tabs.sendMessage(request.audibleTabId, { txt: 'request title' });
     }
 }
-chrome.runtime.sendMessage({ txt: 'request audible tabid' });
