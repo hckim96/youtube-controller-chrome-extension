@@ -1,6 +1,13 @@
 // from when chrome launch , listen  events
 // can see on extension tab, background page
 let audibleTabId = null;
+chrome.tabs.onUpdated.addListener(handleUpdated);
+chrome.tabs.query({ audible: true }, function (tabs) {
+    // may only need in dev mode // get audio playing tab
+    if (tabs.length !== 0) {
+        audibleTabId = tabs[0].id;
+    }
+});
 
 chrome.runtime.onMessage.addListener(gotMessage);
 function gotMessage(request, sender, sendResponse) {
@@ -32,12 +39,3 @@ function handleUpdated(tabId, changeInfo, tab) {
         }
     }
 }
-
-chrome.tabs.onUpdated.addListener(handleUpdated);
-
-chrome.tabs.query({ audible: true }, function (tabs) {
-    // may only need in dev mode // get audio playing tab
-    if (tabs.length !== 0) {
-        audibleTabId = tabs[0].id;
-    }
-});
