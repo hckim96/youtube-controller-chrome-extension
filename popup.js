@@ -32,8 +32,8 @@ function gotMessage(request, sender, sendResponse) {
         document.querySelector('h2').innerText = request.title;
     } else if (request.txt === 'response img') {
     } else if (request.txt === 'response progress') {
-        console.log(request.progress);
-        document.querySelector('input').value = request.progress;
+        document.querySelector('progress').max = request.valuemax;
+        document.querySelector('progress').value = request.valuenow;
     } else if (request.audible === true) {
         chrome.tabs.sendMessage(request.audibleTabId, { txt: 'request title' });
     } else if (request.txt === 'response ad exist') {

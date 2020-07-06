@@ -12,3 +12,7 @@ body {
 button + button {
     margin-left: 1rem;
 }
+
+progress {
+    width: 85%;
+}

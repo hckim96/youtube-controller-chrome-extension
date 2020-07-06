@@ -1,5 +1,6 @@
 chrome.runtime.onMessage.addListener(gotMessage);
 let progressBar;
+let buttons;
 
 function gotMessage(request, sender, sendResponse) {
     console.log(`sender:: ${sender} // request :: ${JSON.stringify(request)}`);
@@ -10,11 +11,27 @@ function gotMessage(request, sender, sendResponse) {
             );
             if (typeof progressBar != 'undefined' && progressBar != null) {
                 console.log('progress bar exist');
-                console.log(progressBar.attributes['aria-valuemax']);
 
-                progressBar.addEventListener('change', (e) => {
-                    console.log(e.target.value);
-                });
+                asdf = setInterval(() => {
+                    if (
+                        progressBar.attributes['aria-valuemax'].value ==
+                        progressBar.attributes['aria-valuenow'].value
+                    ) {
+                        clearInterval(asdf);
+                    }
+                    console.log(
+                        progressBar.attributes['aria-valuemax'].value,
+                        progressBar.attributes['aria-valuenow'].value
+                    );
+                    progressBar = document.querySelector(
+                        '#movie_player > div.ytp-chrome-bottom > div.ytp-progress-bar-container > div.ytp-progress-bar'
+                    );
+                    chrome.runtime.sendMessage({
+                        txt: 'response progress',
+                        valuemax: progressBar.attributes['aria-valuemax'].value,
+                        valuenow: progressBar.attributes['aria-valuenow'].value,
+                    });
+                }, 1000);
             }
         }
     }
@@ -50,7 +67,7 @@ function gotMessage(request, sender, sendResponse) {
 
             break;
         case 'skip':
-            let buttons = document
+            buttons = document
                 .querySelector('#movie_player > div.video-ads.ytp-ad-module')
                 .querySelectorAll('button');
 
@@ -78,7 +95,18 @@ function gotMessage(request, sender, sendResponse) {
                 txt: 'response title',
                 title: ele.textContent,
             });
+            buttons = document
+                .querySelector('#movie_player > div.video-ads.ytp-ad-module')
+                .querySelectorAll('button');
 
+            for (let i = 0; i < buttons.length; i++) {
+                console.log(`i = ${i}`);
+                if (buttons[i].classList.contains('ytp-ad-skip-button')) {
+                    buttons[i].click();
+                    console.log(`target i = ${i}`);
+                    chrome.runtime.sendMessage({ txt: 'response ad skipped' });
+                }
+            }
             break;
         case 'request img':
             chrome.runtime.sendMessage({
