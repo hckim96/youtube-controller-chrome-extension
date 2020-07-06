@@ -1,57 +1,67 @@
 chrome.runtime.onMessage.addListener(gotMessage);
+let progressBar;
+
 function gotMessage(request, sender, sendResponse) {
     console.log(`sender:: ${sender} // request :: ${JSON.stringify(request)}`);
+    if (request.hasOwnProperty('status')) {
+        if (request.status == 'complete') {
+            progressBar = document.querySelector(
+                '#movie_player > div.ytp-chrome-bottom > div.ytp-progress-bar-container > div.ytp-progress-bar'
+            );
+            if (typeof progressBar != 'undefined' && progressBar != null) {
+                console.log('progress bar exist');
+                console.log(progressBar.attributes['aria-valuemax']);
 
-    const a = document.querySelectorAll('a');
-    const buttons = document.querySelectorAll('button');
-    let ele;
-    // ele = document.querySelector('#container > h1 > yt-formatted-string');
-
-    // chrome.runtime.sendMessage({
-    //     txt: 'response title',
-    //     title: ele.textContent,
-    // });
-
-    // video = documnet.querySelector(
-    //     '#movie_player > div.html5-video-container > video'
-    // );
-
+                progressBar.addEventListener('change', (e) => {
+                    console.log(e.target.value);
+                });
+            }
+        }
+    }
     switch (request.txt) {
         case 'play':
-            for (let i = 0; i < buttons.length; i++) {
-                if (buttons[i].classList.contains('ytp-play-button')) {
-                    buttons[i].click();
-                }
-            }
-            // video.play();
+            document
+                .querySelector(
+                    '#movie_player > div.ytp-chrome-bottom > div.ytp-chrome-controls > div.ytp-left-controls > button'
+                )
+                .click();
             break;
         case 'stop':
-            for (let i = 0; i < buttons.length; i++) {
-                if (buttons[i].classList.contains('ytp-play-button')) {
-                    buttons[i].click();
-                }
-            }
-            // video.stop();
+            document
+                .querySelector(
+                    '#movie_player > div.ytp-chrome-bottom > div.ytp-chrome-controls > div.ytp-left-controls > button'
+                )
+                .click();
             break;
         case 'next':
-            for (let i = 0; i < a.length; i++) {
-                if (a[i].classList.contains('ytp-next-button')) {
-                    a[i].click();
-                }
-            }
+            document
+                .querySelector(
+                    '#movie_player > div.ytp-chrome-bottom > div.ytp-chrome-controls > div.ytp-left-controls > a.ytp-next-button.ytp-button'
+                )
+                .click();
+
             break;
         case 'prev':
-            for (let i = 0; i < a.length; i++) {
-                if (a[i].classList.contains('ytp-prev-button')) {
-                    a[i].click();
-                }
-            }
+            document
+                .querySelector(
+                    '#movie_player > div.ytp-chrome-bottom > div.ytp-chrome-controls > div.ytp-left-controls > a.ytp-prev-button.ytp-button'
+                )
+                .click();
+
             break;
         case 'skip':
-            let skip = document.querySelector(
-                '#skip-button:23 > span > button'
-            );
-            skip.click();
+            let buttons = document
+                .querySelector('#movie_player > div.video-ads.ytp-ad-module')
+                .querySelectorAll('button');
+
+            for (let i = 0; i < buttons.length; i++) {
+                console.log(`i = ${i}`);
+                if (buttons[i].classList.contains('ytp-ad-skip-button')) {
+                    buttons[i].click();
+                    console.log(`target i = ${i}`);
+                    chrome.runtime.sendMessage({ txt: 'response ad skipped' });
+                }
+            }
             break;
         case 'request html':
             chrome.runtime.sendMessage({
@@ -77,6 +87,26 @@ function gotMessage(request, sender, sendResponse) {
             break;
         case 'request progress':
             break;
+        case 'request ad exist':
+            let adModule = document.querySelector(
+                '#movie_player > div.video-ads.ytp-ad-module'
+            );
+            if (
+                typeof adModule != 'undefined' &&
+                adModule != null &&
+                adModule.hasChildNodes()
+            ) {
+                console.log('ad exist');
+                if (adModule.querySelector('button')) {
+                    console.log('button exist');
+                    chrome.runtime.sendMessage({ txt: 'response ad exist' });
+                }
+            } else {
+                console.log('ad does not exist');
+            }
+
+            break;
+
         default:
             break;
     }
