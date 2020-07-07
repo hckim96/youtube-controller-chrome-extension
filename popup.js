@@ -4,7 +4,11 @@ let audibleTabIds = [];
 chrome.runtime.sendMessage({ txt: 'request audibleTabIds' });
 
 function gotMessage(request, sender, sendResponse) {
-    console.log(`sender:: ${sender} // request :: ${JSON.stringify(request)}`);
+    console.log(
+        `sender:: ${JSON.stringify(sender)} // request :: ${JSON.stringify(
+            request
+        )}`
+    );
 
     switch (request.txt) {
         case 'response audibleTabIds':
@@ -12,6 +16,9 @@ function gotMessage(request, sender, sendResponse) {
             let audibleTabContainer = document.querySelector(
                 '.audible-tab-container'
             );
+            while (audibleTabContainer.hasChildNodes()) {
+                audibleTabContainer.removeChild(audibleTabContainer.firstChild);
+            }
 
             let progress, play, next, prev, audibleTab, navBar, header;
 
@@ -95,10 +102,5 @@ function gotMessage(request, sender, sendResponse) {
 
         default:
             break;
-    }
-    if (request.audible === true) {
-        chrome.tabs.sendMessage(request.audibleTabIds, {
-            txt: 'request title',
-        });
     }
 }

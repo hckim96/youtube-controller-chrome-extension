@@ -10,6 +10,10 @@ chrome.tabs.query({ audible: true }, function (tabs) {
             audibleTabIds.push(tabs[i].id);
         }
     }
+    chrome.runtime.sendMessage({
+        txt: 'response audibleTabIds',
+        audibleTabIds,
+    });
 });
 chrome.runtime.onMessage.addListener(gotMessage);
 
@@ -47,3 +51,18 @@ function handleUpdated(tabId, changeInfo, tab) {
         chrome.tabs.sendMessage(tabId, { txt: 'request ad exist' });
     }
 }
+
+chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
+    console.log(`tabid ${tabId} is closed , removeinfo :: ${removeInfo}`);
+
+    for (let i = 0; i < audibleTabIds.length; i++) {
+        if (tabId == audibleTabIds[i]) {
+            audibleTabIds.splice(i, 1);
+            console.log(i);
+        }
+    }
+    chrome.runtime.sendMessage({
+        txt: 'response audibleTabIds',
+        audibleTabIds,
+    });
+});

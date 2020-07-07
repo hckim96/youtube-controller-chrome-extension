@@ -4,12 +4,21 @@ body {
     flex-direction: column;
 }
 .audible-tab {
+    background: rgb(233, 233, 233);
+    border-radius: 10px;
     padding-bottom: 10px;
-    border-bottom: 1px solid black;
+
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+.audible-tab + .audible-tab {
+    margin-top: 5px;
+}
+
+h1 {
+    font-size: medium;
 }
 .nav-bar {
     margin-top: 8px;

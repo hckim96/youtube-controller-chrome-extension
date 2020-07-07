@@ -4,10 +4,12 @@ let buttons;
 let asdf = null;
 
 function gotMessage(request, sender, sendResponse) {
-    console.log(`sender:: ${sender} // request :: ${JSON.stringify(request)}`);
+    console.log(
+        `sender:: ${JSON.stringify(sender)} // request :: ${JSON.stringify(
+            request
+        )}`
+    );
     if (
-        request.hasOwnProperty('status') &&
-        request.status == 'complete' &&
         asdf == null &&
         document.querySelector(
             '#movie_player > div.html5-video-container > video'
