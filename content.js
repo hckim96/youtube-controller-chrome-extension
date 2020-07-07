@@ -75,12 +75,12 @@ function gotMessage(request, sender, sendResponse) {
                 }
             }
             break;
-        case 'request html':
-            chrome.runtime.sendMessage({
-                txt: 'response html',
-                html: document.all[0].outerHTML,
-            });
-            break;
+        // case 'request html':
+        //     chrome.runtime.sendMessage({
+        //         txt: 'response html',
+        //         html: document.all[0].outerHTML,
+        //     });
+        //     break;
         case 'request title':
             ele = document.querySelector(
                 '#container > h1 > yt-formatted-string'

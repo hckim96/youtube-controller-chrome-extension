@@ -26,3 +26,19 @@ button + button {
 progress {
     width: 85%;
 }
+
+button {
+    width: 40px;
+    height: 40px;
+    background: white;
+
+    box-shadow: antiquewhite;
+    border: none;
+    /* color: black; */
+    border-radius: 50%;
+    outline: none;
+    box-shadow: 0px 3px 8px #aaa, inset 0px 2px 3px #fff;
+}
+button:hover {
+    background: rgb(214, 214, 214);
+}
