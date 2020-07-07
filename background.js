@@ -41,7 +41,14 @@ function handleUpdated(tabId, changeInfo, tab) {
     });
 
     // if there's new audible tab -> push to audibletabids
-    if (changeInfo.audible === true && !audibleTabIds.includes(tabId)) {
+    if (
+        changeInfo.audible === true &&
+        !audibleTabIds
+            .map(function (obj) {
+                return obj['id'];
+            })
+            .includes(tabId)
+    ) {
         audibleTabIds.push({ id: tabId, playing: changeInfo.audible });
         chrome.runtime.sendMessage({
             txt: 'response audibleTabIds',
