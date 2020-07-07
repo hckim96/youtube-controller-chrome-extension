@@ -26,49 +26,76 @@ function gotMessage(request, sender, sendResponse) {
                 header = document.createElement('h1');
                 audibleTab = document.createElement('div');
                 audibleTab.classList.add('audible-tab');
-                audibleTab.id = 'audible-tab-' + audibleTabIds[i];
+                audibleTab.id = 'audible-tab-' + audibleTabIds[i].id;
                 navBar = document.createElement('div');
                 navBar.classList.add('nav-bar');
-                navBar.id = 'nav-bar-' + audibleTabIds[i];
-                header.id = 'h-' + audibleTabIds[i];
+                navBar.id = 'nav-bar-' + audibleTabIds[i].id;
+                header.id = 'h-' + audibleTabIds[i].id;
                 prev = document.createElement('button');
                 prev.classList.add('prev-button');
-                prev.id = 'prev-' + audibleTabIds[i];
+                prev.id = 'prev-' + audibleTabIds[i].id;
                 prev.innerHTML =
                     '<svg height="100%" version="1.1" viewBox="0 0 36 36" width="100%"><use class="ytp-svg-shadow" xlink:href="#ytp-id-10"></use><path class="ytp-svg-fill" d="m 12,12 h 2 v 12 h -2 z m 3.5,6 8.5,6 V 12 z" id="ytp-id-10"></path></svg>';
                 next = document.createElement('button');
                 next.classList.add('next-button');
-                next.id = 'next-' + audibleTabIds[i];
+                next.id = 'next-' + audibleTabIds[i].id;
                 next.innerHTML =
                     '<svg height="100%" version="1.1" viewBox="0 0 36 36" width="100%"><use class="ytp-svg-shadow" xlink:href="#ytp-id-12"></use><path class="ytp-svg-fill" d="M 12,24 20.5,18 12,12 V 24 z M 22,12 v 12 h 2 V 12 h -2 z" id="ytp-id-12"></path></svg>';
                 progress = document.createElement('progress');
                 progress.max = 100;
                 progress.value = 0;
-                progress.id = 'progress-' + audibleTabIds[i];
+                progress.id = 'progress-' + audibleTabIds[i].id;
                 play = document.createElement('button');
                 play.classList.add('play-button');
-                play.id = 'play-' + audibleTabIds[i];
+                play.id = 'play-' + audibleTabIds[i].id;
                 play.innerHTML = '&#9658;';
 
+                pause = document.createElement('button');
+                pause.classList.add('pause-button');
+                pause.id = 'pause-' + audibleTabIds[i].id;
+                pause.innerHTML =
+                    '<svg height="100%" version="1.1" viewBox="0 0 36 36" width="100%"><use class="ytp-svg-shadow" xlink:href="#ytp-id-84"></use><path class="ytp-svg-fill" d="M 12,26 16,26 16,10 12,10 z M 21,26 25,26 25,10 21,10 z" id="ytp-id-84"></path></svg>';
+
+                if (audibleTabIds[i].hasOwnProperty('playing')) {
+                    audibleTabIds[i].playing
+                        ? (play.style.display = 'none')
+                        : (pause.style.display = 'none');
+                }
+
                 play.addEventListener('click', (e) => {
-                    chrome.tabs.sendMessage(audibleTabIds[i], { txt: 'play' });
+                    chrome.tabs.sendMessage(audibleTabIds[i].id, {
+                        txt: 'play',
+                    });
+                    play.style.display = 'none';
+                    pause.style.display = '';
                 });
                 next.addEventListener('click', (e) => {
-                    chrome.tabs.sendMessage(audibleTabIds[i], { txt: 'next' });
+                    chrome.tabs.sendMessage(audibleTabIds[i].id, {
+                        txt: 'next',
+                    });
                 });
                 prev.addEventListener('click', (e) => {
-                    chrome.tabs.sendMessage(audibleTabIds[i], { txt: 'prev' });
+                    chrome.tabs.sendMessage(audibleTabIds[i].id, {
+                        txt: 'prev',
+                    });
                 });
-
+                pause.addEventListener('click', (e) => {
+                    chrome.tabs.sendMessage(audibleTabIds[i].id, {
+                        txt: 'stop',
+                    });
+                    pause.style.display = 'none';
+                    play.style.display = '';
+                });
                 audibleTabContainer.appendChild(audibleTab);
                 audibleTab.appendChild(header);
                 audibleTab.appendChild(progress);
                 audibleTab.appendChild(navBar);
                 navBar.appendChild(prev);
                 navBar.appendChild(play);
+                navBar.appendChild(pause);
                 navBar.appendChild(next);
 
-                chrome.tabs.sendMessage(audibleTabIds[i], {
+                chrome.tabs.sendMessage(audibleTabIds[i].id, {
                     txt: 'request title',
                 });
             }

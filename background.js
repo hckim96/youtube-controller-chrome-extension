@@ -3,18 +3,18 @@
 let audibleTabIds = [];
 
 chrome.tabs.onUpdated.addListener(handleUpdated);
-chrome.tabs.query({ audible: true }, function (tabs) {
-    // may only need in dev mode // get audio playing tab
-    for (i = 0; i < tabs.length; i++) {
-        if (!audibleTabIds.includes(tabs[i].id)) {
-            audibleTabIds.push(tabs[i].id);
-        }
-    }
-    chrome.runtime.sendMessage({
-        txt: 'response audibleTabIds',
-        audibleTabIds,
-    });
-});
+// chrome.tabs.query({ audible: true }, function (tabs) {
+//     // may only need in dev mode // get audio playing tab
+//     for (i = 0; i < tabs.length; i++) {
+//         if (!audibleTabIds.includes(tabs[i].id)) {
+//             audibleTabIds.push(tabs[i].id);
+//         }
+//     }
+//     chrome.runtime.sendMessage({
+//         txt: 'response audibleTabIds',
+//         audibleTabIds,
+//     });
+// });
 chrome.runtime.onMessage.addListener(gotMessage);
 
 //handle message from content or popup
@@ -42,8 +42,23 @@ function handleUpdated(tabId, changeInfo, tab) {
 
     // if there's new audible tab -> push to audibletabids
     if (changeInfo.audible === true && !audibleTabIds.includes(tabId)) {
-        audibleTabIds.push(tabId);
+        audibleTabIds.push({ id: tabId, playing: changeInfo.audible });
+        chrome.runtime.sendMessage({
+            txt: 'response audibleTabIds',
+            audibleTabIds,
+        });
     }
+    // if (changeInfo.audible === false && audibleTabIds.includes(tabId)) {
+    //     for (let i = 0; i < audibleTabIds.length; i++) {
+    //         if (audibleTabIds[i].id == tabId) {
+    //             audibleTabIds[i].playing = false;
+    //         }
+    //     }
+    //     chrome.runtime.sendMessage({
+    //         txt: 'response audibleTabIds',
+    //         audibleTabIds,
+    //     });
+    // }
 
     //if audible tab update its title, request title and ad exist
     if (audibleTabIds.includes(tabId) && changeInfo.hasOwnProperty('title')) {
@@ -56,7 +71,7 @@ chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
     console.log(`tabid ${tabId} is closed , removeinfo :: ${removeInfo}`);
 
     for (let i = 0; i < audibleTabIds.length; i++) {
-        if (tabId == audibleTabIds[i]) {
+        if (tabId == audibleTabIds[i].id) {
             audibleTabIds.splice(i, 1);
             console.log(i);
         }
