@@ -22,6 +22,8 @@ function gotMessage(request, sender, sendResponse) {
                 navBar = document.createElement('div');
                 navBar.classList.add('nav-bar');
                 progress = document.createElement('progress');
+                progress.max = 100;
+                progress.value = 0;
                 play = document.createElement('button');
                 prev = document.createElement('button');
                 next = document.createElement('button');
@@ -68,8 +70,10 @@ function gotMessage(request, sender, sendResponse) {
                 request.title;
             break;
         case 'response progress':
-            document.querySelector('#progress').max = request.valuemax;
-            document.querySelector('#progress').value = request.valuenow;
+            document.querySelector('#progress-' + sender.tab.id).max =
+                request.valuemax;
+            document.querySelector('#progress-' + sender.tab.id).value =
+                request.valuenow;
             break;
         case 'response ad exist':
             skip = document.createElement('button');
