@@ -3,34 +3,6 @@ let progressBar;
 let buttons;
 let asdf = null;
 
-// console.log(
-//     document
-//         .querySelector('#movie_player > div.html5-video-container > video')
-//         .getCurrent()
-// );
-
-// document.oncanplay(function () {
-//     console.log(
-//         document.querySelector(
-//             '#movie_player > div.html5-video-container > video'
-//         )
-//     );
-//     asdf = setInterval(() => {
-//         chrome.runtime.sendMessage({
-//             txt: 'response progress',
-//             valuemax: document
-//                 .querySelector(
-//                     '#movie_player > div.html5-video-container > video'
-//                 )
-//                 .getDuration(),
-//             valuenow: document
-//                 .querySelector(
-//                     '#movie_player > div.html5-video-container > video'
-//                 )
-//                 .getCurrent(),
-//         });
-//     }, 2000);
-// });
 function gotMessage(request, sender, sendResponse) {
     console.log(`sender:: ${sender} // request :: ${JSON.stringify(request)}`);
     if (
