@@ -3,18 +3,7 @@
 let audibleTabIds = [];
 
 chrome.tabs.onUpdated.addListener(handleUpdated);
-// chrome.tabs.query({ audible: true }, function (tabs) {
-//     // may only need in dev mode // get audio playing tab
-//     for (i = 0; i < tabs.length; i++) {
-//         if (!audibleTabIds.includes(tabs[i].id)) {
-//             audibleTabIds.push(tabs[i].id);
-//         }
-//     }
-//     chrome.runtime.sendMessage({
-//         txt: 'response audibleTabIds',
-//         audibleTabIds,
-//     });
-// });
+
 chrome.runtime.onMessage.addListener(gotMessage);
 
 //handle message from content or popup
@@ -25,10 +14,52 @@ function gotMessage(request, sender, sendResponse) {
         )}`
     );
     if (request.txt === 'request audibleTabIds') {
+        chrome.tabs.query({ audible: true }, function (tabs) {
+            // may only need in dev mode // get audio playing tab
+            for (i = 0; i < tabs.length; i++) {
+                for (let j = 0; j < audibleTabIds.length; j++) {
+                    if (audibleTabIds[j].id == tabs[i].id) {
+                        break;
+                    }
+                    if (
+                        j == audibleTabIds.length - 1 ||
+                        audibleTabIds.length == 0
+                    ) {
+                        audibleTabIds.push({ id: tabs[i].id, playing: true });
+                        // chrome.runtime.sendMessage({
+                        //     txt: 'response audibleTabIds',
+                        //     audibleTabIds,
+                        // });
+                    }
+                }
+            }
+        });
         chrome.runtime.sendMessage({
             txt: 'response audibleTabIds',
             audibleTabIds,
         });
+    }
+    switch (request.txt) {
+        case 'play':
+            for (let i = 0; i < audibleTabIds.length; i++) {
+                if (audibleTabIds[i].id == sender.tab.id) {
+                    audibleTabIds[i].playing = true;
+                }
+            }
+            break;
+        case 'pause':
+            for (let i = 0; i < audibleTabIds.length; i++) {
+                if (audibleTabIds[i].id == sender.tab.id) {
+                    audibleTabIds[i].playing = false;
+                }
+            }
+            break;
+        case 'request audibleTabIds':
+            chrome.runtime.sendMessage({
+                txt: 'response audibleTabIds',
+                audibleTabIds,
+            });
+            break;
     }
 }
 
@@ -41,36 +72,32 @@ function handleUpdated(tabId, changeInfo, tab) {
     });
 
     // if there's new audible tab -> push to audibletabids
-    if (
-        changeInfo.audible === true &&
-        !audibleTabIds
-            .map(function (obj) {
-                return obj['id'];
-            })
-            .includes(tabId)
-    ) {
-        audibleTabIds.push({ id: tabId, playing: changeInfo.audible });
-        chrome.runtime.sendMessage({
-            txt: 'response audibleTabIds',
-            audibleTabIds,
-        });
+    if (changeInfo.audible === true) {
+        for (let i = 0; i < audibleTabIds.length; i++) {
+            if (audibleTabIds[i].id == tabId) {
+                break;
+            }
+            if (i == audibleTabIds.length - 1) {
+                audibleTabIds.push({ id: tabId, playing: changeInfo.audible });
+                chrome.runtime.sendMessage({
+                    txt: 'response audibleTabIds',
+                    audibleTabIds,
+                });
+            }
+        }
     }
-    // if (changeInfo.audible === false && audibleTabIds.includes(tabId)) {
-    //     for (let i = 0; i < audibleTabIds.length; i++) {
-    //         if (audibleTabIds[i].id == tabId) {
-    //             audibleTabIds[i].playing = false;
-    //         }
-    //     }
-    //     chrome.runtime.sendMessage({
-    //         txt: 'response audibleTabIds',
-    //         audibleTabIds,
-    //     });
-    // }
 
     //if audible tab update its title, request title and ad exist
     if (audibleTabIds.includes(tabId) && changeInfo.hasOwnProperty('title')) {
-        chrome.tabs.sendMessage(tabId, { txt: 'request title' });
-        chrome.tabs.sendMessage(tabId, { txt: 'request ad exist' });
+        for (let i = 0; i < audibleTabIds.length; i++) {
+            if (audibleTabIds[i].id == tabId) {
+                continue;
+            }
+            if (i == audibleTabIds.length || i == audibleTabIds.length - 1) {
+                chrome.tabs.sendMessage(tabId, { txt: 'request title' });
+                chrome.tabs.sendMessage(tabId, { txt: 'request ad exist' });
+            }
+        }
     }
 }
 

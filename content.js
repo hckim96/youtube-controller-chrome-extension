@@ -1,6 +1,7 @@
 chrome.runtime.onMessage.addListener(gotMessage);
 let progressBar;
 let buttons;
+let intervalIdList = [];
 let asdf = null;
 
 function gotMessage(request, sender, sendResponse) {
@@ -9,12 +10,7 @@ function gotMessage(request, sender, sendResponse) {
             request
         )}`
     );
-    if (
-        asdf == null &&
-        document.querySelector(
-            '#movie_player > div.html5-video-container > video'
-        ) != null
-    ) {
+    if (asdf == null && document.querySelector('video') != null) {
         asdf = setInterval(() => {
             chrome.runtime.sendMessage({
                 txt: 'response progress',
@@ -31,6 +27,16 @@ function gotMessage(request, sender, sendResponse) {
             //     )
             // );
         }, 1000);
+        querySelector('video').addEventListener('pause', () => {
+            chrome.runtime.sendMessage({
+                txt: 'response pause',
+            });
+        });
+        querySelector('video').addEventListener('play', () => {
+            chrome.runtime.sendMessage({
+                txt: 'response play',
+            });
+        });
     }
     switch (request.txt) {
         case 'play':

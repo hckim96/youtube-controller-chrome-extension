@@ -126,6 +126,20 @@ function gotMessage(request, sender, sendResponse) {
         case 'response ad skipped':
             document.querySelector('#skip-' + sender.tab.id).remove();
             break;
+        case 'play':
+            for (let i = 0; i < audibleTabIds.length; i++) {
+                if (audibleTabIds[i].id == sender.tab.id) {
+                    audibleTabIds[i].playing = true;
+                }
+            }
+            break;
+        case 'pause':
+            for (let i = 0; i < audibleTabIds.length; i++) {
+                if (audibleTabIds[i].id == sender.tab.id) {
+                    audibleTabIds[i].playing = false;
+                }
+            }
+            break;
 
         default:
             break;
