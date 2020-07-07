@@ -4,37 +4,37 @@ let buttons;
 
 function gotMessage(request, sender, sendResponse) {
     console.log(`sender:: ${sender} // request :: ${JSON.stringify(request)}`);
-    if (request.hasOwnProperty('status')) {
-        if (request.status == 'complete') {
-            progressBar = document.querySelector(
-                '#movie_player > div.ytp-chrome-bottom > div.ytp-progress-bar-container > div.ytp-progress-bar'
-            );
-            if (typeof progressBar != 'undefined' && progressBar != null) {
-                console.log('progress bar exist');
+    // if (request.hasOwnProperty('status')) {
+    //     if (request.status == 'complete') {
+    //         progressBar = document.querySelector(
+    //             '#movie_player > div.ytp-chrome-bottom > div.ytp-progress-bar-container > div.ytp-progress-bar'
+    //         );
+    //         if (typeof progressBar != 'undefined' && progressBar != null) {
+    //             console.log('progress bar exist');
 
-                asdf = setInterval(() => {
-                    if (
-                        progressBar.attributes['aria-valuemax'].value ==
-                        progressBar.attributes['aria-valuenow'].value
-                    ) {
-                        clearInterval(asdf);
-                    }
-                    console.log(
-                        progressBar.attributes['aria-valuemax'].value,
-                        progressBar.attributes['aria-valuenow'].value
-                    );
-                    progressBar = document.querySelector(
-                        '#movie_player > div.ytp-chrome-bottom > div.ytp-progress-bar-container > div.ytp-progress-bar'
-                    );
-                    chrome.runtime.sendMessage({
-                        txt: 'response progress',
-                        valuemax: progressBar.attributes['aria-valuemax'].value,
-                        valuenow: progressBar.attributes['aria-valuenow'].value,
-                    });
-                }, 1000);
-            }
-        }
-    }
+    //             asdf = setInterval(() => {
+    //                 if (
+    //                     progressBar.attributes['aria-valuemax'].value ==
+    //                     progressBar.attributes['aria-valuenow'].value
+    //                 ) {
+    //                     clearInterval(asdf);
+    //                 }
+    //                 console.log(
+    //                     progressBar.attributes['aria-valuemax'].value,
+    //                     progressBar.attributes['aria-valuenow'].value
+    //                 );
+    //                 progressBar = document.querySelector(
+    //                     '#movie_player > div.ytp-chrome-bottom > div.ytp-progress-bar-container > div.ytp-progress-bar'
+    //                 );
+    //                 chrome.runtime.sendMessage({
+    //                     txt: 'response progress',
+    //                     valuemax: progressBar.attributes['aria-valuemax'].value,
+    //                     valuenow: progressBar.attributes['aria-valuenow'].value,
+    //                 });
+    //             }, 1000);
+    //         }
+    //     }
+    // }
     switch (request.txt) {
         case 'play':
             document
