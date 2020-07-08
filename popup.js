@@ -4,11 +4,8 @@ let audibleTabIds = [];
 chrome.runtime.sendMessage({ txt: 'request audibleTabIds' });
 
 function gotMessage(request, sender, sendResponse) {
-    console.log(
-        `sender:: ${JSON.stringify(sender)} // request :: ${JSON.stringify(
-            request
-        )}`
-    );
+    console.log(`sender:: ${JSON.stringify(sender)}`);
+    console.log(`request :: ${JSON.stringify(request)}`);
 
     switch (request.txt) {
         case 'response audibleTabIds':
@@ -66,8 +63,8 @@ function gotMessage(request, sender, sendResponse) {
                     chrome.tabs.sendMessage(audibleTabIds[i].id, {
                         txt: 'play',
                     });
-                    play.style.display = 'none';
-                    pause.style.display = '';
+                    // play.style.display = 'none';
+                    // pause.style.display = '';
                 });
                 next.addEventListener('click', (e) => {
                     chrome.tabs.sendMessage(audibleTabIds[i].id, {
@@ -83,8 +80,8 @@ function gotMessage(request, sender, sendResponse) {
                     chrome.tabs.sendMessage(audibleTabIds[i].id, {
                         txt: 'stop',
                     });
-                    pause.style.display = 'none';
-                    play.style.display = '';
+                    // pause.style.display = 'none';
+                    // play.style.display = '';
                 });
                 audibleTabContainer.appendChild(audibleTab);
                 audibleTab.appendChild(header);

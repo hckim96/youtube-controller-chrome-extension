@@ -8,37 +8,9 @@ chrome.runtime.onMessage.addListener(gotMessage);
 
 //handle message from content or popup
 function gotMessage(request, sender, sendResponse) {
-    console.log(
-        `sender:: ${JSON.stringify(sender)} // request :: ${JSON.stringify(
-            request
-        )}`
-    );
-    if (request.txt === 'request audibleTabIds') {
-        chrome.tabs.query({ audible: true }, function (tabs) {
-            // may only need in dev mode // get audio playing tab
-            for (i = 0; i < tabs.length; i++) {
-                for (let j = 0; j < audibleTabIds.length; j++) {
-                    if (audibleTabIds[j].id == tabs[i].id) {
-                        break;
-                    }
-                    if (
-                        j == audibleTabIds.length - 1 ||
-                        audibleTabIds.length == 0
-                    ) {
-                        audibleTabIds.push({ id: tabs[i].id, playing: true });
-                        // chrome.runtime.sendMessage({
-                        //     txt: 'response audibleTabIds',
-                        //     audibleTabIds,
-                        // });
-                    }
-                }
-            }
-        });
-        chrome.runtime.sendMessage({
-            txt: 'response audibleTabIds',
-            audibleTabIds,
-        });
-    }
+    console.log(`sender:: ${JSON.stringify(sender)}`);
+    console.log(`request :: ${JSON.stringify(request)}`);
+
     switch (request.txt) {
         case 'play':
             for (let i = 0; i < audibleTabIds.length; i++) {
@@ -55,6 +27,57 @@ function gotMessage(request, sender, sendResponse) {
             }
             break;
         case 'request audibleTabIds':
+            chrome.tabs.query({ audible: true }, function (tabs) {
+                // may only need in dev mode // get audio playing tab
+                for (i = 0; i < tabs.length; i++) {
+                    for (let j = 0; j < audibleTabIds.length; j++) {
+                        if (audibleTabIds[j].id == tabs[i].id) {
+                            break;
+                        }
+                        if (
+                            j == audibleTabIds.length - 1 ||
+                            audibleTabIds.length == 0
+                        ) {
+                            audibleTabIds.push({
+                                id: tabs[i].id,
+                                playing: true,
+                            });
+                            // chrome.runtime.sendMessage({
+                            //     txt: 'response audibleTabIds',
+                            //     audibleTabIds,
+                            // });
+                        }
+                    }
+                }
+            });
+            chrome.runtime.sendMessage({
+                txt: 'response audibleTabIds',
+                audibleTabIds,
+            });
+            break;
+        case 'response pause':
+            for (let i = 0; i < audibleTabIds.length; i++) {
+                if (audibleTabIds[i].id == sender.tab.id) {
+                    audibleTabIds[i].playing = false;
+                    break;
+                }
+            }
+            chrome.runtime.sendMessage({
+                txt: 'response audibleTabIds',
+                audibleTabIds,
+            });
+            break;
+        case 'response play':
+            //if there's no audibletab now ?
+            for (let i = 0; i < audibleTabIds.length; i++) {
+                if (audibleTabIds.length == 0) {
+                    console.log('audibletabids length is 0 ');
+                }
+                if (audibleTabIds[i].id == sender.tab.id) {
+                    audibleTabIds[i].playing = true;
+                    break;
+                }
+            }
             chrome.runtime.sendMessage({
                 txt: 'response audibleTabIds',
                 audibleTabIds,

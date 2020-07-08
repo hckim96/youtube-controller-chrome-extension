@@ -5,11 +5,8 @@ let intervalIdList = [];
 let asdf = null;
 
 function gotMessage(request, sender, sendResponse) {
-    console.log(
-        `sender:: ${JSON.stringify(sender)} // request :: ${JSON.stringify(
-            request
-        )}`
-    );
+    console.log(`sender:: ${JSON.stringify(sender)}`);
+    console.log(`request :: ${JSON.stringify(request)}`);
     if (asdf == null && document.querySelector('video') != null) {
         asdf = setInterval(() => {
             chrome.runtime.sendMessage({
@@ -27,15 +24,17 @@ function gotMessage(request, sender, sendResponse) {
             //     )
             // );
         }, 1000);
-        querySelector('video').addEventListener('pause', () => {
+        document.querySelector('video').addEventListener('pause', () => {
             chrome.runtime.sendMessage({
                 txt: 'response pause',
             });
+            console.log('video paused');
         });
-        querySelector('video').addEventListener('play', () => {
+        document.querySelector('video').addEventListener('play', () => {
             chrome.runtime.sendMessage({
                 txt: 'response play',
             });
+            console.log('video play');
         });
     }
     switch (request.txt) {
