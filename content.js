@@ -1,16 +1,15 @@
 chrome.runtime.onMessage.addListener(gotMessage);
 let progressBar;
 let buttons;
-let intervalIdList = [];
-let asdf = null;
+let tmpIntervalId = null;
 
 // problem : when tab is not active for while and video is muted,
 //popup doesnt show progress
 function gotMessage(request, sender, sendResponse) {
     console.log(`sender:: ${JSON.stringify(sender)}`);
     console.log(`request :: ${JSON.stringify(request)}`);
-    if (asdf == null && document.querySelector('video') != null) {
-        asdf = setInterval(() => {
+    if (tmpIntervalId == null && document.querySelector('video') != null) {
+        tmpIntervalId = setInterval(() => {
             chrome.runtime.sendMessage({
                 txt: 'response progress',
                 valuemax: document.querySelector('video').duration,
@@ -22,6 +21,7 @@ function gotMessage(request, sender, sendResponse) {
             //     )
             // );
         }, 1000);
+
         document.querySelector('video').addEventListener('pause', () => {
             chrome.runtime.sendMessage({
                 txt: 'response pause',
@@ -80,12 +80,6 @@ function gotMessage(request, sender, sendResponse) {
                 }
             }
             break;
-        // case 'request html':
-        //     chrome.runtime.sendMessage({
-        //         txt: 'response html',
-        //         html: document.all[0].outerHTML,
-        //     });
-        //     break;
         case 'request title':
             ele = document.querySelector(
                 '#container > h1 > yt-formatted-string'
@@ -139,5 +133,3 @@ function gotMessage(request, sender, sendResponse) {
             break;
     }
 }
-
-chrome.runtime.sendMessage({ txt: 'this is from content message' });
