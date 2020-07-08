@@ -72,7 +72,15 @@ function handleUpdated(tabId, changeInfo, tab) {
     });
 
     // if there's new audible tab -> push to audibletabids
-    if (changeInfo.audible === true) {
+    if (changeInfo.audible == true) {
+        if (audibleTabIds.length == 0) {
+            // fixed
+            audibleTabIds.push({ id: tabId, playing: changeInfo.audible });
+            chrome.runtime.sendMessage({
+                txt: 'response audibleTabIds',
+                audibleTabIds,
+            });
+        }
         for (let i = 0; i < audibleTabIds.length; i++) {
             if (audibleTabIds[i].id == tabId) {
                 break;
@@ -88,7 +96,7 @@ function handleUpdated(tabId, changeInfo, tab) {
     }
 
     //if audible tab update its title, request title and ad exist
-    if (audibleTabIds.includes(tabId) && changeInfo.hasOwnProperty('title')) {
+    if (changeInfo.hasOwnProperty('title')) {
         for (let i = 0; i < audibleTabIds.length; i++) {
             if (audibleTabIds[i].id == tabId) {
                 continue;
