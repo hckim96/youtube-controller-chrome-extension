@@ -21,7 +21,7 @@ h1 {
     font-size: medium;
 }
 .nav-bar {
-    margin-top: 8px;
+    margin-top: 4px;
     width: 30%;
     display: flex;
     flex-direction: row;
@@ -31,7 +31,9 @@ h1 {
 button + button {
     margin-left: 1rem;
 }
-
+span {
+    margin-left: -75%;
+}
 progress {
     width: 85%;
 }

@@ -17,7 +17,14 @@ function gotMessage(request, sender, sendResponse) {
                 audibleTabContainer.removeChild(audibleTabContainer.firstChild);
             }
 
-            let progress, play, next, prev, audibleTab, navBar, header;
+            let progress,
+                play,
+                next,
+                prev,
+                audibleTab,
+                navBar,
+                header,
+                progressTime;
 
             for (let i = 0; i < audibleTabIds.length; i++) {
                 header = document.createElement('h1');
@@ -42,6 +49,10 @@ function gotMessage(request, sender, sendResponse) {
                 progress.max = 100;
                 progress.value = 0;
                 progress.id = 'progress-' + audibleTabIds[i].id;
+
+                progressTime = document.createElement('span');
+                progressTime.id = 'progress-time-' + audibleTabIds[i].id;
+
                 play = document.createElement('button');
                 play.classList.add('play-button');
                 play.id = 'play-' + audibleTabIds[i].id;
@@ -85,7 +96,9 @@ function gotMessage(request, sender, sendResponse) {
                 });
                 audibleTabContainer.appendChild(audibleTab);
                 audibleTab.appendChild(header);
+
                 audibleTab.appendChild(progress);
+                audibleTab.appendChild(progressTime);
                 audibleTab.appendChild(navBar);
                 navBar.appendChild(prev);
                 navBar.appendChild(play);
@@ -107,6 +120,17 @@ function gotMessage(request, sender, sendResponse) {
                 request.valuemax;
             document.querySelector('#progress-' + sender.tab.id).value =
                 request.valuenow;
+            document.querySelector(
+                '#progress-time-' + sender.tab.id
+            ).innerText = `${Math.floor(request.valuenow / 60)}:${
+                Math.floor(request.valuenow % 60).toString().length == 1
+                    ? '0' + Math.floor(request.valuenow % 60).toString()
+                    : Math.floor(request.valuenow % 60).toString()
+            }/${Math.floor(request.valuemax / 60)}:${
+                Math.floor(request.valuemax % 60).toString().length == 1
+                    ? '0' + Math.floor(request.valuemax % 60).toString()
+                    : Math.floor(request.valuemax % 60).toString()
+            }`;
             break;
         case 'response ad exist':
             skip = document.createElement('button');

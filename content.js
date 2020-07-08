@@ -11,12 +11,8 @@ function gotMessage(request, sender, sendResponse) {
         asdf = setInterval(() => {
             chrome.runtime.sendMessage({
                 txt: 'response progress',
-                valuemax: document.querySelector(
-                    '#movie_player > div.html5-video-container > video'
-                ).duration,
-                valuenow: document.querySelector(
-                    '#movie_player > div.html5-video-container > video'
-                ).currentTime,
+                valuemax: document.querySelector('video').duration,
+                valuenow: document.querySelector('video').currentTime,
             });
             // console.dir(
             //     document.querySelector(
