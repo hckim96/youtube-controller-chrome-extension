@@ -4,6 +4,8 @@ let buttons;
 let intervalIdList = [];
 let asdf = null;
 
+// problem : when tab is not active for while and video is muted,
+//popup doesnt show progress
 function gotMessage(request, sender, sendResponse) {
     console.log(`sender:: ${JSON.stringify(sender)}`);
     console.log(`request :: ${JSON.stringify(request)}`);

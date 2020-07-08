@@ -149,15 +149,29 @@ function gotMessage(request, sender, sendResponse) {
             break;
         case 'play':
             for (let i = 0; i < audibleTabIds.length; i++) {
-                if (audibleTabIds[i].id == sender.tab.id) {
+                if (audibleTabIds[i].id == request.senderTabId) {
                     audibleTabIds[i].playing = true;
+                    document.querySelector(
+                        '#play-' + request.senderTabId
+                    ).style.display = 'none';
+                    document.querySelector(
+                        '#pause-' + request.senderTabId
+                    ).style.display = '';
+                    break;
                 }
             }
             break;
         case 'pause':
             for (let i = 0; i < audibleTabIds.length; i++) {
-                if (audibleTabIds[i].id == sender.tab.id) {
+                if (audibleTabIds[i].id == request.senderTabId) {
                     audibleTabIds[i].playing = false;
+                    document.querySelector(
+                        '#play-' + request.senderTabId
+                    ).style.display = '';
+                    document.querySelector(
+                        '#pause-' + request.senderTabId
+                    ).style.display = 'none';
+                    break;
                 }
             }
             break;

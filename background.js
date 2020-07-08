@@ -63,8 +63,8 @@ function gotMessage(request, sender, sendResponse) {
                 }
             }
             chrome.runtime.sendMessage({
-                txt: 'response audibleTabIds',
-                audibleTabIds,
+                txt: 'pause',
+                senderTabId: sender.tab.id,
             });
             break;
         case 'response play':
@@ -79,8 +79,8 @@ function gotMessage(request, sender, sendResponse) {
                 }
             }
             chrome.runtime.sendMessage({
-                txt: 'response audibleTabIds',
-                audibleTabIds,
+                txt: 'play',
+                senderTabId: sender.tab.id,
             });
             break;
     }
